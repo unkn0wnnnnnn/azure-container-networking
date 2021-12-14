@@ -94,12 +94,23 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 	k8s.io/component-base v0.22.1 // indirect
-	k8s.io/klog/v2 v2.9.0 // indirect
+	k8s.io/klog/v2 v2.9.0
 	k8s.io/kube-openapi v0.0.0-20211109043538-20434351676c // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.1.2 // indirect
 )
 
-require github.com/gofrs/uuid v3.3.0+incompatible // indirect
+require (
+	github.com/fatih/structs v1.1.0
+	github.com/gofrs/uuid v3.3.0+incompatible // indirect
+	github.com/jsternberg/zap-logfmt v1.2.0
+	go.uber.org/zap v1.18.1
+)
+
+require (
+	github.com/gofrs/uuid v3.3.0+incompatible // indirect
+	go.uber.org/atomic v1.7.0 // indirect
+	go.uber.org/multierr v1.6.0 // indirect
+)
 
 replace (
 	github.com/Microsoft/go-winio => github.com/microsoft/go-winio v0.4.17
