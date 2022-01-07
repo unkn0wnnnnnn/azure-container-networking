@@ -5,6 +5,8 @@ package telemetry
 
 import (
 	"encoding/json"
+	"fmt"
+	"os"
 
 	"github.com/Azure/azure-container-networking/aitelemetry"
 	"github.com/Azure/azure-container-networking/common"
@@ -147,6 +149,30 @@ func SendCNIMetric(cniMetric *AIMetric, tb *TelemetryBuffer) error {
 		if err == nil {
 			// If write fails, try to re-establish connections as server/client
 			if _, err = tb.Write(report); err != nil {
+				tb.Cancel()
+			}
+		}
+	}
+
+	return err
+}
+
+// This function for sending CNI metrics to telemetry service
+func SendCNIEvent(msg string, tb *TelemetryBuffer) error {
+	var err error
+	var report []byte
+
+	eventMsg := fmt.Sprintf("[%d] %s", os.Getpid(), msg)
+	cniReport := &CNIReport{
+		EventMessage: eventMsg,
+	}
+	if tb != nil && tb.Connected {
+		reportMgr := &ReportManager{Report: cniReport}
+		report, err = reportMgr.ReportToBytes()
+		if err == nil {
+			// If write fails, try to re-establish connections as server/client
+			if _, err = tb.Write(report); err != nil {
+				log.Printf("Error writing to telemetry socket:%v", err)
 				tb.Cancel()
 			}
 		}
