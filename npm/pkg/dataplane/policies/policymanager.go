@@ -58,8 +58,6 @@ func (pMgr *PolicyManager) Bootup(epIDs []string) error {
 	return nil
 }
 
-// TODO call this function in DP
-
 func (pMgr *PolicyManager) Reconcile(stopChannel <-chan struct{}) {
 	go func() {
 		ticker := time.NewTicker(time.Minute * time.Duration(reconcileTimeInMinutes))
@@ -70,8 +68,6 @@ func (pMgr *PolicyManager) Reconcile(stopChannel <-chan struct{}) {
 			case <-stopChannel:
 				return
 			case <-ticker.C:
-				pMgr.Lock()
-				defer pMgr.Unlock()
 				pMgr.reconcile()
 			}
 		}
@@ -138,7 +134,7 @@ func (pMgr *PolicyManager) RemovePolicy(policyKey string, endpointList map[strin
 }
 
 func (pMgr *PolicyManager) isLastPolicy() bool {
-	// if change our code to delete more than one policy at once, we can specify numPoliciesToDelete as an argument
+	// if we change our code to delete more than one policy at once, we can specify numPoliciesToDelete as an argument
 	numPoliciesToDelete := 1
 	return len(pMgr.policyMap.cache) == numPoliciesToDelete
 }

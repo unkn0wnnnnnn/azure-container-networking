@@ -73,7 +73,7 @@ var (
 )
 
 func main() {
-	dp, err := dataplane.NewDataPlane(nodeName, common.NewIOShim(), dpCfg)
+	dp, err := dataplane.NewDataPlane(nodeName, common.NewIOShim(), dpCfg, nil)
 	panicOnError(err)
 	printAndWait(true)
 
@@ -162,6 +162,9 @@ func main() {
 	printAndWait(true)
 	panicOnError(dp.AddPolicy(policies.TestNetworkPolicies[0]))
 	fmt.Println("AZURE-NPM should have rules now")
+
+	fmt.Println("waiting for reconcile to finish (will be a while if you don't update the reconcile time in policymanager.go")
+	time.Sleep(10 * time.Minute)
 }
 
 func panicOnError(err error) {

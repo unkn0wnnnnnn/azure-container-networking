@@ -25,6 +25,7 @@ var (
 		PolicyManagerCfg: &policies.PolicyManagerCfg{
 			PolicyMode: policies.IPSetPolicyMode,
 		},
+		disableGoRoutines: true,
 	}
 
 	fakeIPSetRestoreSuccess = testutils.TestCmd{
@@ -84,7 +85,7 @@ func TestNewDataPlane(t *testing.T) {
 	calls := getBootupTestCalls()
 	ioshim := common.NewMockIOShim(calls)
 	defer ioshim.VerifyCalls(t, calls)
-	dp, err := NewDataPlane("testnode", ioshim, dpCfg)
+	dp, err := NewDataPlane("testnode", ioshim, dpCfg, nil)
 	require.NoError(t, err)
 	assert.NotNil(t, dp)
 }
@@ -95,7 +96,7 @@ func TestCreateAndDeleteIpSets(t *testing.T) {
 	calls := getBootupTestCalls()
 	ioshim := common.NewMockIOShim(calls)
 	defer ioshim.VerifyCalls(t, calls)
-	dp, err := NewDataPlane("testnode", ioshim, dpCfg)
+	dp, err := NewDataPlane("testnode", ioshim, dpCfg, nil)
 	require.NoError(t, err)
 	assert.NotNil(t, dp)
 	setsTocreate := []*ipsets.IPSetMetadata{
@@ -137,7 +138,7 @@ func TestAddToSet(t *testing.T) {
 	calls := getBootupTestCalls()
 	ioshim := common.NewMockIOShim(calls)
 	defer ioshim.VerifyCalls(t, calls)
-	dp, err := NewDataPlane("testnode", ioshim, dpCfg)
+	dp, err := NewDataPlane("testnode", ioshim, dpCfg, nil)
 	require.NoError(t, err)
 
 	setsTocreate := []*ipsets.IPSetMetadata{
@@ -201,7 +202,7 @@ func TestApplyPolicy(t *testing.T) {
 	calls := append(getBootupTestCalls(), getAddPolicyTestCallsForDP(&testPolicyobj)...)
 	ioshim := common.NewMockIOShim(calls)
 	defer ioshim.VerifyCalls(t, calls)
-	dp, err := NewDataPlane("testnode", ioshim, dpCfg)
+	dp, err := NewDataPlane("testnode", ioshim, dpCfg, nil)
 	require.NoError(t, err)
 
 	err = dp.AddPolicy(&testPolicyobj)
@@ -215,7 +216,7 @@ func TestRemovePolicy(t *testing.T) {
 	calls = append(calls, getRemovePolicyTestCallsForDP(&testPolicyobj)...)
 	ioshim := common.NewMockIOShim(calls)
 	defer ioshim.VerifyCalls(t, calls)
-	dp, err := NewDataPlane("testnode", ioshim, dpCfg)
+	dp, err := NewDataPlane("testnode", ioshim, dpCfg, nil)
 	require.NoError(t, err)
 
 	err = dp.AddPolicy(&testPolicyobj)
@@ -245,7 +246,7 @@ func TestUpdatePolicy(t *testing.T) {
 	}
 	ioshim := common.NewMockIOShim(calls)
 	defer ioshim.VerifyCalls(t, calls)
-	dp, err := NewDataPlane("testnode", ioshim, dpCfg)
+	dp, err := NewDataPlane("testnode", ioshim, dpCfg, nil)
 	require.NoError(t, err)
 
 	err = dp.AddPolicy(&testPolicyobj)

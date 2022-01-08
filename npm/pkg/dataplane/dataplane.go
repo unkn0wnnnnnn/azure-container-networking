@@ -24,9 +24,12 @@ type PolicyMode string
 type Config struct {
 	*ipsets.IPSetManagerCfg
 	*policies.PolicyManagerCfg
+	// helpful for UTs (defaults to false for external packages)
+	disableGoRoutines bool
 }
 
 type DataPlane struct {
+	*Config
 	policyMgr *policies.PolicyManager
 	ipsetMgr  *ipsets.IPSetManager
 	networkID string
@@ -35,7 +38,7 @@ type DataPlane struct {
 	endpointCache  map[string]*NPMEndpoint
 	ioShim         *common.IOShim
 	updatePodCache map[string]*updateNPMPod
-	*Config
+	stopChannel    <-chan struct{}
 }
 
 type NPMEndpoint struct {
@@ -48,22 +51,27 @@ type NPMEndpoint struct {
 	NetPolReference map[string]struct{}
 }
 
-func NewDataPlane(nodeName string, ioShim *common.IOShim, cfg *Config) (*DataPlane, error) {
+func NewDataPlane(nodeName string, ioShim *common.IOShim, cfg *Config, stopChannel <-chan struct{}) (*DataPlane, error) {
 	metrics.InitializeAll()
 	dp := &DataPlane{
+		Config:         cfg,
 		policyMgr:      policies.NewPolicyManager(ioShim, cfg.PolicyManagerCfg),
 		ipsetMgr:       ipsets.NewIPSetManager(cfg.IPSetManagerCfg, ioShim),
 		endpointCache:  make(map[string]*NPMEndpoint),
 		nodeName:       nodeName,
 		ioShim:         ioShim,
 		updatePodCache: make(map[string]*updateNPMPod),
-		Config:         cfg,
+		stopChannel:    stopChannel,
 	}
 
 	err := dp.ResetDataPlane()
 	if err != nil {
 		klog.Errorf("Failed to reset dataplane: %v", err)
 		return nil, err
+	}
+	// necessary for UTs because of ioshim
+	if !dp.disableGoRoutines {
+		dp.policyMgr.Reconcile(dp.stopChannel)
 	}
 	return dp, nil
 }
@@ -74,10 +82,9 @@ func (dp *DataPlane) InitializeDataPlane() error {
 	return nil
 }
 
-// ResetDataPlane helps in cleaning up dataplane sets and policies programmed
-// by NPM, returning a clean slate
+// ResetDataPlane cleans the NPM sets and policies in the dataplane and performs initialization.
+// TODO rename this function to BootupDataplane
 func (dp *DataPlane) ResetDataPlane() error {
-	// TODO rename this function to BootupDataplane
 	// NOTE: used to create an all-namespaces set, but there's no need since it will be created by the control plane
 	return dp.bootupDataPlane()
 }
