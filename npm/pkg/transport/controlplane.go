@@ -1,7 +1,9 @@
 package transport
 
 import (
+	"bytes"
 	"context"
+	"encoding/gob"
 	"fmt"
 	"net"
 
@@ -9,7 +11,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/stats"
-	"google.golang.org/protobuf/types/known/structpb"
 	"k8s.io/klog/v2"
 )
 
@@ -97,15 +98,19 @@ func (m *Manager) start() error {
 				}
 			}
 		case msg := <-m.inCh:
+			var payload bytes.Buffer
+			enc := gob.NewEncoder(&payload)
+
+			err := enc.Encode(msg)
+			if err != nil {
+				fmt.Errorf("Failed to encode")
+				return err
+			}
 			for _, client := range m.Registrations {
 				if err := client.stream.SendMsg(&protos.Events{
-					Type:   *protos.Events_APPLY.Enum(),
-					Object: *protos.Events_IPSET.Enum(),
-					Event: []*protos.Event{
-						{
-							Data: []*structpb.Struct{
-								msg.(*structpb.Struct),
-							},
+					Payload: map[string]*protos.GoalState{
+						"IPSETAPPLY": {
+							Data: [][]byte{payload.Bytes()},
 						},
 					},
 				}); err != nil {

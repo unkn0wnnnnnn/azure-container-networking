@@ -181,8 +181,9 @@ const (
 )
 
 type IPSet struct {
-	Name       string
-	HashedName string
+	Name           string
+	unPrefixedName string
+	HashedName     string
 	// SetProperties embedding set properties
 	SetProperties
 	// IpPodKey is used for setMaps to store Ips and ports as keys
@@ -207,8 +208,9 @@ type IPSet struct {
 func NewIPSet(setMetadata *IPSetMetadata) *IPSet {
 	prefixedName := setMetadata.GetPrefixName()
 	set := &IPSet{
-		Name:       prefixedName,
-		HashedName: util.GetHashedName(prefixedName),
+		Name:           prefixedName,
+		unPrefixedName: setMetadata.Name,
+		HashedName:     util.GetHashedName(prefixedName),
 		SetProperties: SetProperties{
 			Type: setMetadata.Type,
 			Kind: setMetadata.GetSetKind(),
@@ -228,6 +230,10 @@ func NewIPSet(setMetadata *IPSetMetadata) *IPSet {
 		set.MemberIPSets = make(map[string]*IPSet)
 	}
 	return set
+}
+
+func (set *IPSet) GetSetMetadata() *IPSetMetadata {
+	return NewIPSetMetadata(set.unPrefixedName, set.Type)
 }
 
 func (set *IPSet) String() string {
