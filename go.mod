@@ -29,7 +29,7 @@ require (
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.9.0
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.8.0
 	github.com/vishvananda/netns v0.0.0-20210104183010-2eb08e3e575f // indirect
 	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf
 	golang.org/x/term v0.0.0-20210503060354-a79de5458b56 // indirect
@@ -92,7 +92,7 @@ require (
 	gopkg.in/ini.v1 v1.63.2 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/component-base v0.22.1 // indirect
 	k8s.io/klog/v2 v2.9.0
 	k8s.io/kube-openapi v0.0.0-20211109043538-20434351676c // indirect
@@ -103,11 +103,10 @@ require (
 	github.com/fatih/structs v1.1.0
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
 	github.com/jsternberg/zap-logfmt v1.2.0
-	go.uber.org/zap v1.18.1
+	go.uber.org/zap v1.24.0
 )
 
 require (
-	github.com/gofrs/uuid v3.3.0+incompatible // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 )
