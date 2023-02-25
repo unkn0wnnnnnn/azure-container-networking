@@ -8,6 +8,8 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/golangci/golangci-lint v1.43.0
 	github.com/jstemmer/go-junit-report v0.9.1
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
+	google.golang.org/protobuf v1.27.1
 	mvdan.cc/gofumpt v0.2.0
 	sigs.k8s.io/controller-tools v0.7.0
 )
@@ -151,11 +153,10 @@ require (
 	github.com/yeya24/promlinter v0.1.0 // indirect
 	golang.org/x/mod v0.5.1 // indirect
 	golang.org/x/net v0.0.0-20211123203042-d83791d6bcd9 // indirect
-	golang.org/x/sys v0.0.0-20211123173158-ef496fb156ab // indirect
+	golang.org/x/sys v0.1.0 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/tools v0.1.8-0.20211102182255-bb4add04ddef // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
-	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/ini.v1 v1.64.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
